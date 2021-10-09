@@ -23,7 +23,7 @@ class DESCipher:
     else:
       raise Exception("No supported DES mode")
 
-  def _prepareDES(self, key: str, mode: int):
+  def _prepareDES(self, key: str, mode: int, iv = "12345678"):
     if len(key) != 8:
       raise Exception("Key must be 8 bytes long, not "+ len(key))
 
@@ -31,7 +31,8 @@ class DESCipher:
     if mode == 1:
       des = DES.new(key, self._getMode(mode)[0])
     else:
-      hash=hashlib.sha256(key) 
+      iv = iv.encode("ascii")
+      hash=hashlib.sha256(iv) 
       p = hash.digest()
       iv = p.ljust(8)[:8]
       des = DES.new(key, self._getMode(mode)[0], iv)
@@ -48,18 +49,18 @@ class DESCipher:
     except Exception as e:
       raise Exception(e)
 
-  def encrypt(self, key: str, mode: int, imageURL: str) -> None:
+  def encrypt(self, key: str, mode: int, imageURL: str, iv = "12345678" ) -> None:
     imageBytes = self._prepareImage(imageURL)
-    des = self._prepareDES(key, mode)
+    des = self._prepareDES(key, mode, iv)
     encryptedText = des.encrypt(imageBytes)
     print(self._generateImage(encryptedText, imageURL, "e", mode))
     
-  def decrypt(self, key: str, mode: int, imageURL: str) -> None:
+  def decrypt(self, key: str, mode: int, imageURL: str, iv = "12345678") -> None:
     imageBytes = self._prepareImage(imageURL)
-    des = self._prepareDES(key, mode)
+    des = self._prepareDES(key, mode, iv)
     decryptedText = des.decrypt(imageBytes)
     print(self._generateImage(decryptedText, imageURL, "d", mode))
 
 desCipher = DESCipher()
-desCipher.encrypt("holahola", 3, "Imagen1.bmp")
-desCipher.decrypt("holahola", 3, "Imagen1eCFB.bmp")
+desCipher.encrypt("holahola", 2, "Imagen1.bmp", "13579135")
+desCipher.decrypt("holahola", 2, "Imagen1eCBC.bmp", "13579135")
