@@ -11,4 +11,7 @@ Here's a tool for encrypt and decrypt BMP images using DES
 
     pycripto:
     pip install pycrypto
+    
+    pycryptodome
+    pip install pycryptodome
     ```
