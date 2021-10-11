@@ -34,7 +34,7 @@ class DESCipher:
             raise Exception("Key must be 8 bytes long, not " + len(key))
 
         key = key.encode('ascii')
-        if mode == 1:
+        if mode == ECB:
             des = DES.new(key, self._getMode(mode)[0])
         else:
             iv = iv.encode("ascii")
